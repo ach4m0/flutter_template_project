@@ -20,11 +20,11 @@ class SplashPage extends StatelessWidget {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if(state is Unauthenticated)
-          Navigator.of(context).pushNamed(LoginPage.routeName);
+          Navigator.of(context).pushReplacementNamed(LoginPage.routeName);
           // _navigationService.navigateTo(LoginPage.routeName, arguments: {});
 
         if(state is Authenticated)
-          Navigator.of(context).pushNamed(HomePage.routeName);
+          Navigator.of(context).pushReplacementNamed(HomePage.routeName);
           // _navigationService.navigateTo(HomePage.routeName, arguments: {});
 
       },

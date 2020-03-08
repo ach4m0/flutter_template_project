@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter_template_project/core/blocs/auth/auth_bloc.dart';
+import 'package:flutter_template_project/ui/login/login.dart';
 
 class HomePage extends StatelessWidget {
 
@@ -25,6 +26,7 @@ class HomePage extends StatelessWidget {
               ],
               onSelected: (_) {
                 BlocProvider.of<AuthBloc>(context).add(LoggedOut());
+                Navigator.of(context).pushReplacementNamed(LoginPage.routeName);
               },
           )
         ],

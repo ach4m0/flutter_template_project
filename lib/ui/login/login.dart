@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter_template_project/core/blocs/login/login_bloc.dart';
 import 'package:flutter_template_project/core/blocs/auth/auth_bloc.dart';
-import 'package:flutter_template_project/ui/widgets/buttons.dart';
-import 'package:flutter_template_project/ui/widgets/text_fields.dart';
+import 'package:flutter_template_project/ui/home/home.dart';
+import 'package:flutter_template_project/ui/shared/theme.dart';
 
 class LoginPage extends StatefulWidget {
 
@@ -34,28 +34,47 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: BlocListener<LoginBloc,LoginState>(
-            listener: (context, state) {
-              if(state is LoginLoading) {
-                _showSnackBar(context: context, text: 'Iniciando sesión');
-              }
+        child: BlocListener<LoginBloc,LoginState>(
+          listener: (context, state) {
+            if(state is LoginLoading) {
+              _showSnackBar(context: context, text: 'Iniciando sesión');
+            }
 
-              if(state is LoginError) {
-                _showSnackBar(context: context, text: 'Error al iniciar sesión', error: true);
-                _stopLoading();
-              }
+            if(state is LoginError) {
+              _showSnackBar(context: context, text: 'Error al iniciar sesión', error: true);
+              _stopLoading();
+            }
 
-              if(state is LoginSuccess) {
-                BlocProvider.of<AuthBloc>(context).add(LoggedIn());
-                _stopLoading();
-              }
-            },
-            child: _getLoginForm()
-          )
+            if(state is LoginSuccess) {
+              BlocProvider.of<AuthBloc>(context).add(LoggedIn());
+              _stopLoading();
+              Navigator.of(context).pushReplacementNamed(HomePage.routeName);
+            }
+
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: BlocListener<LoginBloc,LoginState>(
+              listener: (context, state) {
+                if(state is LoginLoading) {
+                  _showSnackBar(context: context, text: 'Iniciando sesión');
+                }
+
+                if(state is LoginError) {
+                  _showSnackBar(context: context, text: 'Error al iniciar sesión', error: true);
+                  _stopLoading();
+                }
+
+                if(state is LoginSuccess) {
+                  BlocProvider.of<AuthBloc>(context).add(LoggedIn());
+                  _stopLoading();
+                }
+              },
+              child: _getLoginForm()
+            )
+          ),
         ),
-      ),
+      )
     );
   }
 
@@ -106,14 +125,18 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
         SizedBox(height: 16,),
-        CustomTextField(
-          labelText: 'Correo electrónico',
+        TextField(
+          decoration: InputDecoration(
+            labelText: 'Correo electrónico',
+          ),
           controller: _emailController,
           keyboardType: TextInputType.emailAddress,
         ),
         SizedBox(height: 16,),
-        CustomTextField(
-          labelText: 'Password',
+        TextField(
+          decoration: InputDecoration(
+            labelText: 'Password',
+          ),
           controller: _passwordController,
           obscureText: true,
         ),
@@ -121,7 +144,7 @@ class _LoginPageState extends State<LoginPage> {
         Container(
           height: 50,
           width: double.infinity,
-          child: PrimaryButton(
+          child: RaisedButton(
             child:
               isLoadingCredentials ?
                 CircularProgressIndicator() :
@@ -150,7 +173,9 @@ class _LoginPageState extends State<LoginPage> {
         Container(
           height: 50,
           width: double.infinity,
-          child: CustomOutlineButton(
+          child: RaisedButton(
+            color: Colors.white,
+            shape: outlineButtonBorder,
             child: isLoadingGoogleSignIn ?
               CircularProgressIndicator() :
               Text(
